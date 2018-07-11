@@ -5,36 +5,27 @@ jsonCallback(
       {
 <script language="SpeedScript">
 
-define variable area                  as char format 'x(8)'.
-define variable dominio               as char format 'x(8)'.
-define variable articulo              as char format 'x(18)'.
-define variable almacen               as char format 'x(8)'.
-define variable cantidad              as char format 'x(15)'.
-define variable um                    as char format 'x(15)'.
-define variable costo_unitario        as char format 'x(15)'.
-define variable fecha_l               as char format 'x(10)'.
-define variable fecha_n               as char format 'x(10)'.
-define variable solicitado_por        as char format 'x(8)'.
-define variable almacen_oc            as char format 'x(8)'.
-define variable comentarios           as char format 'x(8)'.
-define variable detalle_comentarios   as char format 'x(8)'.
+define variable dominio                  as char format 'x(8)'.
+define variable articulo                  as char format 'x(18)'.
+define variable cantidad                  as char format 'x(8)'.
+define variable almacen_de                as char format 'x(18)'.
+define variable ubicacion_de              as char format 'x(18)'.
+define variable lote_de                   as char format 'x(15)'.
+define variable referencia_de             as char format 'x(15)'.
+define variable almacen_a                 as char format 'x(18)'.
+define variable ubicacion_a               as char format 'x(18)'.
+define variable lote_a                    as char format 'x(15)'.
+define variable referencia_a              as char format 'x(15)'.
 
-area                    = get-value("area").
-dominio                 = get-value("dominio").
-articulo                = get-value("articulo").
-almacen                 = get-value("almacen").
-cantidad                = get-value("cantidad").
-um                      = get-value("um").
-costo_unitario          = get-value("costo_unitario").
-fecha_l                 = get-value("fecha_l").
-fecha_n                 = get-value("fecha_n").
-solicitado_por          = get-value("solicitado_por").
-almacen_oc              = get-value("almacen_oc").
-comentarios             = get-value("comentarios").
-detalle_comentarios     = get-value("detalle_comentarios").
+dominio                    = get-value("dominio").
+articulo                    = get-value("articulo").
+almacen_a                   = get-value("almacen_a").
+ubicacion_a                 = get-value("ubicacion_a").
+lote_a                      = get-value("lote_a").
+referencia_a                = get-value("referencia_a").
 
 
-{&OUT} " 'dominio': '" dominio "','area': '" area "','articulo': '" articulo "','almacen': '" almacen "','cantidad': '" cantidad "','um': '" um "','costo_unitario': '" costo_unitario "','fecha_l': '" fecha_l "','fecha_n': '" fecha_n "','solicitado_por': '" solicitado_por "','almacen_oc': '" almacen_oc "','comentarios': '" comentarios "','detalle_comentarios': '" detalle_comentarios "' ".
+{&OUT} " 'articulo': '" articulo "','almacen_a': '" almacen_a "','ubicacion_a': '" ubicacion_a "','lote_a': '" lote_a "','referencia_a': '" referencia_a "' ".
 
 define variable dDate as DATE.
 define variable nombrecim as char format 'x(100)'.
@@ -44,24 +35,18 @@ DEF VAR tsdate AS DATETIME.
 ASSIGN tsdate = DATETIME( TODAY, MTIME ).
 
 dDate=today.
-nombrecim=string("/interfaceprod/rq/gen-5-1-") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".cim").
-nombreerr=string("/interfaceprod/rq/gen-5-1-") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".err").
+nombrecim=string("/interfaceprod/tpt/gen-3-4-1") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".cim").
+nombreerr=string("/interfaceprod/tpt/gen-3-4-1") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".err").
 
 OUTPUT TO VALUE(nombrecim).
 
 		   put unformat
-       '"' trim(area) '" - ' skip
-         ' - ' skip
-         '"' trim(articulo) '" '
-         '"' trim(almacen) '" - - '
+       '"' trim(articulo) '" '
          skip
-         '"' trim(cantidad) '" '
-         '"NO" '
-         '"' trim(fecha_l) '" '
-         '"' trim(fecha_n) '" '
-         '"PRUEBA" - - - '
-         '"' trim(almacen_oc) '" '
-         '"NO" "SI" - - "LS" - "' trim(detalle_comentarios) '"'
+         '"' trim(cantidad) '"    '
+         '  '
+         '"' trim(lote_de) '" '
+         '"' trim(referencia_a) '" '
          skip.
 
 OUTPUT CLOSE.
@@ -85,7 +70,7 @@ SESSION:NUMERIC-SEPARATOR=",".
 batchrun = true.
 output to VALUE(nombreerr).
 input from VALUE(nombrecim).
-{gprun.i ""xxpoprmt.p""}.
+{gprun.i ""iclotr02.p""}.
 batchrun = false.
 input close.
 output close.
@@ -99,8 +84,8 @@ linea = 1.
 repeat:
 IMPORT UNFORMATTED retorno.
 
-if linea > 33 and index(retorno,"mero Req",56)>0 THEN DO:
-{&OUT} "'Requisicion1': '" substring(retorno,66,8) "'".
+if linea > 33 and index(retorno,"a",56)>0 THEN DO:
+{&OUT} "'Requisicion1': '" retorno "'".
 buscado=true.
 LEAVE.
 END.
