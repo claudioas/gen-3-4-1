@@ -1,0 +1,119 @@
+jsonCallback(
+  {
+    'errores':
+    [
+      {
+<script language="SpeedScript">
+
+define variable area                  as char format 'x(8)'.
+define variable dominio               as char format 'x(8)'.
+define variable articulo              as char format 'x(18)'.
+define variable almacen               as char format 'x(8)'.
+define variable cantidad              as char format 'x(15)'.
+define variable um                    as char format 'x(15)'.
+define variable costo_unitario        as char format 'x(15)'.
+define variable fecha_l               as char format 'x(10)'.
+define variable fecha_n               as char format 'x(10)'.
+define variable solicitado_por        as char format 'x(8)'.
+define variable almacen_oc            as char format 'x(8)'.
+define variable comentarios           as char format 'x(8)'.
+define variable detalle_comentarios   as char format 'x(8)'.
+
+area                    = get-value("area").
+dominio                 = get-value("dominio").
+articulo                = get-value("articulo").
+almacen                 = get-value("almacen").
+cantidad                = get-value("cantidad").
+um                      = get-value("um").
+costo_unitario          = get-value("costo_unitario").
+fecha_l                 = get-value("fecha_l").
+fecha_n                 = get-value("fecha_n").
+solicitado_por          = get-value("solicitado_por").
+almacen_oc              = get-value("almacen_oc").
+comentarios             = get-value("comentarios").
+detalle_comentarios     = get-value("detalle_comentarios").
+
+
+{&OUT} " 'dominio': '" dominio "','area': '" area "','articulo': '" articulo "','almacen': '" almacen "','cantidad': '" cantidad "','um': '" um "','costo_unitario': '" costo_unitario "','fecha_l': '" fecha_l "','fecha_n': '" fecha_n "','solicitado_por': '" solicitado_por "','almacen_oc': '" almacen_oc "','comentarios': '" comentarios "','detalle_comentarios': '" detalle_comentarios "' ".
+
+define variable dDate as DATE.
+define variable nombrecim as char format 'x(100)'.
+define variable nombreerr as char format 'x(100)'.
+
+DEF VAR tsdate AS DATETIME.
+ASSIGN tsdate = DATETIME( TODAY, MTIME ).
+
+dDate=today.
+nombrecim=string("/interfaceprod/rq/gen-5-1-") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".cim").
+nombreerr=string("/interfaceprod/rq/gen-5-1-") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".err").
+
+OUTPUT TO VALUE(nombrecim).
+
+		   put unformat
+       '"' trim(area) '" - ' skip
+         ' - ' skip
+         '"' trim(articulo) '" '
+         '"' trim(almacen) '" - - '
+         skip
+         '"' trim(cantidad) '" '
+         '"NO" '
+         '"' trim(fecha_l) '" '
+         '"' trim(fecha_n) '" '
+         '"PRUEBA" - - - '
+         '"' trim(almacen_oc) '" '
+         '"NO" "SI" - - "LS" - "' trim(detalle_comentarios) '"'
+         skip.
+
+OUTPUT CLOSE.
+
+{/u1/qad/ea/2012se/src/mfdtitle.i}.
+global_domain=dominio.
+global_userid='appsf'.
+
+if UPPER(dominio)='SURFRUT' THEN DO:
+base_curr = "CLP".
+END.
+
+if UPPER(dominio)='PUREFRUI' THEN DO:
+base_curr = "USD".
+END.
+
+SESSION:NUMERIC-DECIMAL-POINT=".".
+SESSION:NUMERIC-FORMAT="AMERICAN".
+SESSION:NUMERIC-SEPARATOR=",".
+
+batchrun = true.
+output to VALUE(nombreerr).
+input from VALUE(nombrecim).
+{gprun.i ""xxpoprmt.p""}.
+batchrun = false.
+input close.
+output close.
+
+DEFINE VARIABLE retorno AS CHARACTER NO-UNDO FORMAT "x(100)".
+DEFINE VARIABLE buscado AS LOGICAL.
+DEFINE VARIABLE linea AS INTEGER.
+buscado=false.
+input from VALUE(nombreerr).
+linea = 1.
+repeat:
+IMPORT UNFORMATTED retorno.
+
+if linea > 33 and index(retorno,"mero Req",56)>0 THEN DO:
+{&OUT} "'Requisicion1': '" substring(retorno,66,8) "'".
+buscado=true.
+LEAVE.
+END.
+
+linea = linea + 1.
+end.
+input close.
+
+</script>
+      }
+    ]
+  }
+);
+<script language="SpeedScript">
+QUIT.
+</script>
