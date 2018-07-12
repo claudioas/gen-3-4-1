@@ -41,11 +41,10 @@ nombreerr=string("/interfaceprod/tpt/gen-3-4-1") + string(YEAR(dDate),"9999") + 
 OUTPUT TO VALUE(nombrecim).
 
 		   put unformat
-       '"' trim(articulo) '" '
+       '"' trim(articulo) '"'
          skip
-         '"' trim(cantidad) '"    '
-         '  '
-         '"' trim(lote_de) '" '
+         '"' trim(cantidad) '" -' skip
+         '"' trim(alma) '" '
          '"' trim(referencia_a) '" '
          skip.
 
@@ -84,11 +83,8 @@ linea = 1.
 repeat:
 IMPORT UNFORMATTED retorno.
 
-// if linea > 33 and index(retorno,"a")>0 THEN DO:
-{&OUT} "'retorno': '" retorno "'".
+{&OUT} "'retorno': '" retorno "<br>'".
 buscado=true.
-// LEAVE.
-END.
 
 linea = linea + 1.
 end.
