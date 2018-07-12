@@ -1,0 +1,126 @@
+jsonCallback(
+  {
+    'errores':
+    [
+      {
+<script language="SpeedScript">
+
+define variable dominio as char format 'x(8)'.
+define variable articulo as char format 'x(18)'.
+define variable cantidad as char format 'x(20)'.
+define variable almacen as char format 'x(8)'.
+define variable ubicacionorigen as char format 'x(8)'.
+define variable ubicaciondestino as char format 'x(8)'.
+define variable lote as char format 'x(18)'.
+define variable referencia as char format 'x(8)'.
+
+define variable lo_linea as char format 'x(7)'.
+define variable lo_idlinea as char format 'x(7)'.
+define variable lo_id as char format 'x(7)'.
+define variable idtransaccion as char format 'x(20)'.
+define variable tipo as char format 'x(20)'.
+define variable tipoTransaccion as char format 'x(30)'.
+
+dominio=get-value("dominio").
+articulo=get-value("articulo").
+cantidad=get-value("cantidad").
+almacen=get-value("almacen").
+ubicacionorigen=get-value("ubicacionorigen").
+ubicaciondestino=get-value("ubicaciondestino").
+lote=get-value("lote").
+referencia=get-value("referencia").
+
+lo_linea=get-value("lo_linea").
+lo_idlinea=get-value("lo_idlinea").
+lo_id=get-value("lo_id").
+
+tipo=get-value("tipo").
+
+tipoTransaccion = "TRA".
+
+if tipo='devolucion' THEN DO:
+  tipoTransaccion = "DEV".
+END.
+
+
+idtransaccion=tipoTransaccion + get-value("idtransaccion").
+
+{&OUT} "'id_linea': '" lo_linea "','lo_idlinea': '" lo_idlinea "','lo_id': '" lo_id "','cantidad': '" cantidad "',".
+
+define variable dDate as DATE.
+define variable nombrecim as char format 'x(100)'.
+define variable nombreerr as char format 'x(100)'.
+
+DEF VAR tsdate AS DATETIME.
+ASSIGN tsdate = DATETIME( TODAY, MTIME ).
+
+dDate=today.
+nombrecim=string("/interfaceprod/") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".cim").
+nombreerr=string("/interfaceprod/") + string(YEAR(dDate),"9999") + string(MONTH(dDate),"99") + string(DAY(dDate),"99") + "-" + string(replace(STRING(TIME,"HH:MM:SS"),":","-")) + "-" + string( MTIME(tsdate) MODULO 1000, "999" ) + string(".err").
+
+
+OUTPUT TO VALUE(nombrecim).
+
+		   put unformat
+			   '"'  trim(articulo) '"'     skip
+			   '"'  trim(cantidad) '" - ' '"' trim(idtransaccion) '"' ' - -' skip
+			   '"'  trim(almacen) '" '  '"' trim(ubicacionorigen)  '" '   '"' trim(lote) '" ' '"' trim(referencia) '" ' skip
+			   '"'  trim(almacen) '" '  '"' trim(ubicaciondestino) '" ' skip
+			   ' - ' skip
+			   '.' skip
+                           '.' skip.
+
+OUTPUT CLOSE.
+
+{/u1/qad/ea/2012se/src/mfdtitle.i}.
+global_domain=dominio.
+global_userid='appsf'.
+
+if UPPER(dominio)='SURFRUT' THEN DO:
+base_curr = "CLP".
+END.
+
+if UPPER(dominio)='PUREFRUI' THEN DO:
+base_curr = "USD".
+END.
+
+SESSION:NUMERIC-DECIMAL-POINT=".". 
+SESSION:NUMERIC-FORMAT="AMERICAN". 
+SESSION:NUMERIC-SEPARATOR=",".
+
+batchrun = true.
+output to VALUE(nombreerr).
+input from VALUE(nombrecim).
+{gprun.i ""iclotr02.p""}.
+batchrun = false.
+input close.
+output close.
+
+DEFINE VARIABLE retorno AS CHARACTER NO-UNDO FORMAT "x(100)".
+DEFINE VARIABLE error AS LOGICAL.
+error=false.
+input from VALUE(nombreerr).
+repeat:
+IMPORT UNFORMATTED retorno.
+
+if index(retorno,"ERROR")>0 OR index(retorno,"timeout")>0 OR index(retorno,"ld_det")>0 THEN DO:
+{&OUT} "'error': '" retorno "'".
+error=true.
+LEAVE.
+END.
+
+end.
+input close.
+
+if error=false then do:
+{&OUT} "'error': ''".
+end.
+
+</script>
+      }
+    ]
+  }
+);
+<script language="SpeedScript">
+QUIT.
+</script>

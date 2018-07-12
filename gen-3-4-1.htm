@@ -84,10 +84,10 @@ linea = 1.
 repeat:
 IMPORT UNFORMATTED retorno.
 
-if linea > 33 and index(retorno,"a",56)>0 THEN DO:
-{&OUT} "'Requisicion1': '" retorno "'".
+// if linea > 33 and index(retorno,"a")>0 THEN DO:
+{&OUT} "'retorno': '" retorno "'".
 buscado=true.
-LEAVE.
+// LEAVE.
 END.
 
 linea = linea + 1.
