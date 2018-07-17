@@ -19,6 +19,7 @@ define variable referencia_a              as char format 'x(15)'.
 
 dominio                    = get-value("dominio").
 articulo                    = get-value("articulo").
+cantidad                   = get-value("cantidad").
 almacen_a                   = get-value("almacen_a").
 ubicacion_a                 = get-value("ubicacion_a").
 lote_a                      = get-value("lote_a").
@@ -43,11 +44,9 @@ OUTPUT TO VALUE(nombrecim).
 		   put unformat
        '"' trim(articulo) '"'
          skip
-         '"' trim(cantidad) '" -' skip
-         '"' trim(alma) '" '
-         '"' trim(referencia_a) '" '
-         skip.
-
+         '"' trim(cantidad) '"' skip
+         '"' trim(almacen_a) '" ' '"' trim(ubicacion_a) '" ' '"' trim(lote_a) '" ' '"' trim(referencia_a) '" ' skip
+         '"'  trim(almacen_a) '" '  '"' trim(ubicacion_a) '" ' skip.
 OUTPUT CLOSE.
 
 {/u1/qad/ea/2012se/src/mfdtitle.i}.
@@ -69,7 +68,7 @@ SESSION:NUMERIC-SEPARATOR=",".
 batchrun = true.
 output to VALUE(nombreerr).
 input from VALUE(nombrecim).
-{gprun.i ""iclotr02.p""}.
+{gprun.i ""xxiclotr02.p""}.
 batchrun = false.
 input close.
 output close.
